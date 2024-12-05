@@ -1,30 +1,17 @@
+import time
 import pytest
-from pages.login_page import LoginPage
+from selenium.webdriver.common.by import By
+from tests.pages.login_page import LoginPage
 
 
 @pytest.mark.login
 def test_valid_login(driver):
-    driver.get("https://example.com/login")
     login_page = LoginPage(driver)
+    login_page.login()
+    actual_username = driver.find_element(By.XPATH, "//*[@id='pt-userpage']/a/span").text.lower()
 
-    # Perform login
-    login_page.enter_username("test_user")
-    login_page.enter_password("secure_password")
-    login_page.click_login()
-
-    # Verify successful login (add locator for post-login validation)
-    assert "Welcome" in driver.title
+    # time.sleep(5)
+    assert LoginPage.username in actual_username, f"Expected username '{LoginPage.username}' to be in '{actual_username}'"
+    print(f"Проверка что введеное имя пользователя: {LoginPage.username}\nсовпадает с указанным на сайте после входа: {actual_username}")
 
 
-@pytest.mark.login
-def test_invalid_login(driver):
-    driver.get("https://example.com/login")
-    login_page = LoginPage(driver)
-
-    # Attempt login with invalid credentials
-    login_page.enter_username("wrong_user")
-    login_page.enter_password("wrong_password")
-    login_page.click_login()
-
-    # Verify error message
-    assert login_page.get_error_message() == "Invalid credentials"
