@@ -21,3 +21,6 @@ test_invalid_login()
 
 # 2
 test_login_input_validation()
+
+# 3
+test_key_enter(driver)

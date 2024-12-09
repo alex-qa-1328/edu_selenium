@@ -1,4 +1,5 @@
 import pytest
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 
 from tests.pages import login_page
@@ -35,10 +36,10 @@ def test_invalid_login(driver):
 
 @pytest.mark.parametrize("login", LoginPage.login_data())
 def test_login_input_validation(driver, login):
-    login_url = "https://ru.wikipedia.org/w/index.php?returnto=%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F+%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0&title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%92%D1%85%D0%BE%D0%B4&centralAuthAutologinTried=1&centralAuthError=Not+centrally+logged+in"
+
     base_page = BasePage(driver)
-    driver.get(login_url)
-    print(f"Открываем страницу авторизации: {login_url}")
+    driver.get(LoginPage.login_url)
+    print(f"Открываем страницу авторизации: {LoginPage.login_url}")
 
     BasePage.assert_is_empty(driver.find_element(*LoginPage.username_input))
     print("Проверяем что поле логин пустое")
@@ -54,3 +55,19 @@ def test_login_input_validation(driver, login):
 
     BasePage.assert_is_empty(driver.find_element(*LoginPage.username_input))
     print("Проверяем, что поле логин снова пустое")
+
+def test_key_enter(driver):
+    old_expected_url = "https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%BD"
+    expected_url = "https://ru.wikipedia.org/w/index.php?fulltext=%D0%9D%D0%B0%D0%B9%D1%82%D0%B8&search=%D0%A6%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%BD&title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F%3A%D0%9F%D0%BE%D0%B8%D1%81%D0%BA&ns0=1"
+
+    driver.get(LoginPage.main_page_url)
+    print(f"Открываем главную страницу Википедии:\n{LoginPage.main_page_url}")
+
+    driver.find_element(*BasePage.search_input_field).send_keys("Цицерон")
+    print("Вводим в поисковую строку: Цицерон")
+
+    driver.find_element(*BasePage.search_input_field).send_keys(Keys.ENTER)
+    print("Нажимаем кнопку Enter")
+
+    assert driver.current_url == expected_url
+    print(f"Проверяем что фактический URL:\n{driver.current_url}\nсовпадает с ожидаемым:\n{expected_url}")
