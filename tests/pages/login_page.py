@@ -3,8 +3,9 @@ from tests.pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
+
     # Локаторы
-    username_input = (By.ID, "wpName1")
+    username_input = (By.XPATH, "//input[@id='wpName1']")
     password_input = (By.ID, "wpPassword1")
     login_button = (By.ID, "pt-login")
     error_message = (By.XPATH, "//*[@class='cdx-message__content']")
@@ -20,12 +21,18 @@ class LoginPage(BasePage):
         n_line = neg_file.readline().strip()
         invalid_username, invalid_password = n_line.split(",")
 
+    @staticmethod
+    def login_data():
+        with open(r"C:\Users\Alexandr\PycharmProjects\edu_selenium\src\logins.txt", "r") as logins_file:
+            # Read logins, stripping whitespace or newline characters
+            return [login.strip() for login in logins_file.readlines()]
+
+
     main_page_url = "https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
     negative_url = "https://ru.wiipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
 
     def open_url(self):
         self.driver.get(self.main_page_url)
-
 
     def login(self, login, password):
         self.open_url()

@@ -1,7 +1,6 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-
 class BasePage:
     def __init__(self, driver):
         self.driver = driver
@@ -19,3 +18,15 @@ class BasePage:
 
     def get_element_text(self, locator):
         return self.wait_for_element(locator).text
+
+    def refresh_page(self):
+        self.driver.refresh()
+
+    @staticmethod
+    def assert_is_empty(element):
+        """Check if the input field is empty."""
+        value = element.get_attribute("value")  # Correctly fetch the value attribute
+        assert value == "", f"Field is not empty! Current value: '{value}'"
+
+
+
