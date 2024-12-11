@@ -1,11 +1,8 @@
 import pytest
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-
-from tests.pages import login_page
 from tests.pages.base_page import BasePage
 from tests.pages.login_page import LoginPage
-# from tests.conftest import driver
 
 
 @pytest.mark.login
@@ -13,7 +10,7 @@ def test_valid_login(driver):
     login_page = LoginPage(driver)
     login_page.login(LoginPage.valid_username, LoginPage.valid_password)
     actual_username = driver.find_element(By.XPATH, "//*[@id='pt-userpage']/a/span").text.lower()
-    # actual_username = "thetestuser13934923"
+    # actual_username = "2323thetestuser13534923"
 
     assert LoginPage.valid_username in actual_username, f"Expected username '{LoginPage.valid_username}' to be in '{actual_username}'"
     print(f"Проверка что введеное имя пользователя: {LoginPage.valid_username}\nсовпадает с указанным на сайте после входа: {actual_username}")
@@ -23,9 +20,9 @@ def test_invalid_login(driver):
     login_page = LoginPage(driver)
     login_page.login(LoginPage.invalid_username, LoginPage.invalid_password)
 
-    # error_message = driver.find_element(LoginPage.error_message)
     error_message = login_page.get_error_message()
     print(f"\nНаходим сообщение об ошибке:\n{error_message}")
+
     expected_error_1 = "Введены неверные имя участника или пароль. Попробуйте ещё раз."
     expected_error_2 = "Возникли проблемы с отправленными данными"
 
@@ -36,7 +33,6 @@ def test_invalid_login(driver):
 
 @pytest.mark.parametrize("login", LoginPage.login_data())
 def test_login_input_validation(driver, login):
-
     base_page = BasePage(driver)
     driver.get(LoginPage.login_url)
     print(f"Открываем страницу авторизации: {LoginPage.login_url}")
@@ -71,3 +67,8 @@ def test_key_enter(driver):
 
     assert driver.current_url == expected_url
     print(f"Проверяем что фактический URL:\n{driver.current_url}\nсовпадает с ожидаемым:\n{expected_url}")
+
+
+def test_always_fails(driver):
+    driver.get("https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%BD")
+    assert driver.title == "Non-Existent Title"  # Тест гарантировано упадет

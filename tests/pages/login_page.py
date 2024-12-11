@@ -11,19 +11,20 @@ class LoginPage(BasePage):
     error_message = (By.XPATH, "//*[@class='cdx-message__content']")
     submit_button = (By.ID, 'wpLoginAttempt')
     # submit_button = (By.XPATH, "//*[@id='wpLoginAttempt']")
+    # submit_button = (By.CSS_SELECTOR, "#wpLoginAttempt")
     username_element = (By.ID, "pt-userpage")
 
-    with open(r'C:\Users\Alexandr\PycharmProjects\edu_selenium\src\users.txt', "r") as file:
+    with open(r'C:\Users\Alexandr\PycharmProjects\edu_selenium\src\test-data\users.txt', "r") as file:
         line = file.readline().strip()
         valid_username, valid_password = line.split(",")    # ctrl + D дублирует строку или выделенную область; ctrl + / комментирует строку
 
-    with open(r'C:\Users\Alexandr\PycharmProjects\edu_selenium\src\negative_users.txt', 'r') as neg_file:
+    with open(r'C:\Users\Alexandr\PycharmProjects\edu_selenium\src\test-data\negative_users.txt', 'r') as neg_file:
         n_line = neg_file.readline().strip()
         invalid_username, invalid_password = n_line.split(",")
 
     @staticmethod
     def login_data():
-        with open(r"C:\Users\Alexandr\PycharmProjects\edu_selenium\src\logins.txt", "r") as logins_file:
+        with open(r"C:\Users\Alexandr\PycharmProjects\edu_selenium\src\test-data\logins.txt", "r") as logins_file:
             # Read logins, stripping whitespace or newline characters
             return [login.strip() for login in logins_file.readlines()]
 
