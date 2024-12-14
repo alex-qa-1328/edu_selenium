@@ -26,10 +26,8 @@ def test_invalid_login(driver):
     expected_error_1 = "Введены неверные имя участника или пароль. Попробуйте ещё раз."
     expected_error_2 = "Возникли проблемы с отправленными данными"
 
-    assert error_message in expected_error_1 or error_message in expected_error_2
+    assert error_message == expected_error_1 or error_message == expected_error_2
     print(f"\nПроверяем, что сообщение об ошибке совпадает с ожидаемой:\n{expected_error_1}\nили\n{expected_error_2}")
-
-
 
 @pytest.mark.parametrize("login", LoginPage.login_data())
 def test_login_input_validation(driver, login):
@@ -63,12 +61,14 @@ def test_key_enter(driver):
     print("Вводим в поисковую строку: Цицерон")
 
     driver.find_element(*BasePage.search_input_field).send_keys(Keys.ENTER)
+    # driver.find_element(*BasePage.search_input_field).send_keys(Keys.TAB * 5)
     print("Нажимаем кнопку Enter")
 
     assert driver.current_url == expected_url
+    # assert driver.current_url != old_expected_url
     print(f"Проверяем что фактический URL:\n{driver.current_url}\nсовпадает с ожидаемым:\n{expected_url}")
 
 
 def test_always_fails(driver):
     driver.get("https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%BD")
-    assert driver.title == "Non-Existent Title"  # Тест гарантировано упадет
+    assert driver.title == "ASDJHALSKJDHIUHkJSHDJNSDKJHKSHDKSHD"  # Тест гарантировано упадет

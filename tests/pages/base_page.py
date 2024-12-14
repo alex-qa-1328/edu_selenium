@@ -29,7 +29,7 @@ class BasePage:
     @staticmethod
     def assert_is_empty(element):
         """Check if the input field is empty."""
-        value = element.get_attribute("value")  # Correctly fetch the value attribute
+        value = element.get_attribute("value")
         assert value == "", f"Field is not empty! Current value: '{value}'"
 
 
