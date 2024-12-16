@@ -1,6 +1,8 @@
 import pytest
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from tests.pages.base_page import BasePage
 from tests.pages.login_page import LoginPage
 
@@ -72,3 +74,17 @@ def test_key_enter(driver):
 def test_always_fails(driver):
     driver.get("https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D1%86%D0%B5%D1%80%D0%BE%D0%BD")
     assert driver.title == "ASDJHALSKJDHIUHkJSHDJNSDKJHKSHDKSHD"  # Тест гарантировано упадет
+
+def test_long_loading(driver):
+    slow_url = "https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0"
+    driver.get(slow_url)
+    print(f"Открываем страницу {slow_url}")
+
+    #time.sleep(15) - ОЧЕНЬ плохая реализация явного ожидания. Будет ждать независимо от того,
+    # прогрузился элемент или нет
+
+    # Хорошее явное ожидание:
+    page_title = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "mw-page-title-main")))
+    print(f"Используем явное ожидание для поиска элемента на странице: {page_title}")
+    assert page_title.text == "Москва", f"Ожидали 'Москва', получили {page_title.text}"
+    print(f"Проверка того, что ожидаемое название статьи: Москва\nсовпадает с фактическим: {page_title.text}")

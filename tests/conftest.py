@@ -17,7 +17,10 @@ def driver(request):
     chrome_options.add_argument("--headless=new")
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-    driver.implicitly_wait(10)
+
+    driver.implicitly_wait(10)  # имплицитное (неявное) ожидание заставляет WebDriver
+    # опрашивать DOM определенное количество времени, когда пытается найти элемент.
+    # по сути ожидание любого элемента ДО 10 секунд (если элемент найден, продолжает выполнять работу дальше)
     request.node._driver = driver
     yield driver
     driver.quit()
