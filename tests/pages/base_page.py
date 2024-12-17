@@ -1,8 +1,11 @@
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class BasePage:
+
     def __init__(self, driver):
         self.driver = driver
 
@@ -28,9 +31,23 @@ class BasePage:
 
     @staticmethod
     def assert_is_empty(element):
-        """Check if the input field is empty."""
         value = element.get_attribute("value")
-        assert value == "", f"Field is not empty! Current value: '{value}'"
+        assert value == "", f"Поле не пустое! Его значение: '{value}'"
+
+    # @staticmethod
+    def double_click(self, element):
+        if not isinstance(self.driver, WebDriver):
+            raise ValueError("Invalid WebDriver instance passed to ActionChains.")
+
+        action = ActionChains(self.driver)
+        action.double_click(element).perform()
+        print(f"Двойной клик на элемент: {element}")
+
+    def right_click(self, element):
+        action = ActionChains(self.driver)
+        action.context_click(element).perform()
+        print(f"Нажатие правой кнопки мыши на элемент: {element}")
+
 
 
 
