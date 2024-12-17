@@ -1,6 +1,5 @@
 import os
 from datetime import datetime
-
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -18,7 +17,7 @@ def driver(request):
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
-    driver.implicitly_wait(10)  # имплицитное (неявное) ожидание заставляет WebDriver
+    # driver.implicitly_wait(10)  # имплицитное (неявное) ожидание заставляет WebDriver
     # опрашивать DOM определенное количество времени, когда пытается найти элемент.
     # по сути ожидание любого элемента ДО 10 секунд (если элемент найден, продолжает выполнять работу дальше)
     request.node._driver = driver

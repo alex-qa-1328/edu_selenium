@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
@@ -21,7 +23,8 @@ def test_valid_login(driver):
 def test_invalid_login(driver):
     login_page = LoginPage(driver)
     login_page.login(LoginPage.invalid_username, LoginPage.invalid_password)
-
+    expected_url = "https://ru.wikipedia.org/w/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%92%D1%85%D0%BE%D0%B4&returnto=%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F+%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
+    unexpected_url = "https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
     error_message = login_page.get_error_message()
     print(f"\nНаходим сообщение об ошибке:\n{error_message}")
 
@@ -30,6 +33,12 @@ def test_invalid_login(driver):
 
     assert error_message == expected_error_1 or error_message == expected_error_2
     print(f"\nПроверяем, что сообщение об ошибке совпадает с ожидаемой:\n{expected_error_1}\nили\n{expected_error_2}")
+
+    assert driver.current_url == expected_url, "Ожидаемый и фактический URL не совпадают!"
+    print(f"Ожидаемый URL:\n{expected_url}\nФактический URL:\n{driver.current_url}")
+
+    # assert driver.current_url != unexpected_url, "Неожидаемый и фактический URL совпадают!"
+    # print(f"НЕожидаемый URL:\n{unexpected_url}\nФактический URL:\n{driver.current_url}")
 
 @pytest.mark.parametrize("login", LoginPage.login_data())
 def test_login_input_validation(driver, login):
@@ -76,15 +85,46 @@ def test_always_fails(driver):
     assert driver.title == "ASDJHALSKJDHIUHkJSHDJNSDKJHKSHDKSHD"  # Тест гарантировано упадет
 
 def test_long_loading(driver):
-    slow_url = "https://ru.wikipedia.org/wiki/%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0"
+    slow_url = "https://demoqa.com/checkbox"
     driver.get(slow_url)
     print(f"Открываем страницу {slow_url}")
 
     #time.sleep(15) - ОЧЕНЬ плохая реализация явного ожидания. Будет ждать независимо от того,
     # прогрузился элемент или нет
-
+    # дописать
     # Хорошее явное ожидание:
-    page_title = WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CLASS_NAME, "mw-page-title-main")))
+    title_locator = (By.XPATH, "//h1[@class='text-center']")
+    page_title = driver.find_element(*title_locator)   # Так будет падать из-за недостатка времени на поиск элемента
+    # page_title = WebDriverWait(driver, 15).until(EC.presence_of_element_located(title_locator))
     print(f"Используем явное ожидание для поиска элемента на странице: {page_title}")
-    assert page_title.text == "Москва", f"Ожидали 'Москва', получили {page_title.text}"
-    print(f"Проверка того, что ожидаемое название статьи: Москва\nсовпадает с фактическим: {page_title.text}")
+    assert page_title.text == "Check Box", f"Ожидали 'Check Box', получили {page_title.text}"
+    print(f"Проверка того, что ожидаемое название статьи: Check Box\nсовпадает с фактическим: {page_title.text}")
+
+# Взаимодействие с веб-элементами на странице: чек-боксы, раскрытие/скрытие дерева и т.п.
+def test_web_elements(driver):
+    demo_url = "https://demoqa.com/checkbox"
+    driver.get(demo_url)
+    print(f"Открываем страницу {demo_url}")
+
+    plus_button = driver.find_element(By.XPATH, "//button[@title='Expand all']")
+    minus_button = driver.find_element(By.XPATH, "//button[@title='Collapse all']")
+    plus_button.click()
+    print(f"Клик на раскрытие дерева {plus_button}")
+
+    # 2 локатора для одного и того же элемента
+    desktop_node_index = driver.find_element(By.XPATH, "(//span[@class='rct-checkbox'])[2]")
+    desktop_node_label = driver.find_element(By.XPATH, "//label[@for='tree-node-desktop']")
+
+    desktop_node_index.click()
+    print(f"Клик на первый локатор: {desktop_node_index}")
+
+    assert desktop_node_index.is_selected()
+    print("Проверка что чек-бокс Desktop активирован")
+
+    desktop_node_label.click()
+    print(f"Клик на второй локатор: {desktop_node_label}")
+
+    assert desktop_node_label.is_selected() == False
+    print("Проверка что чек-бокс Desktop деактивирован")
+
+    time.sleep(5)
