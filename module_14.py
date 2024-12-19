@@ -1,5 +1,4 @@
 from tests.conftest import driver
-from tests.login_tests.test_login import test_long_loading
 from tests.web_elements_tests.test_web_elements import *
 
 # TODO: Модуль 14. Детали Selenium и Практика
@@ -17,9 +16,10 @@ test_web_elements()
 
 # 2. ActionChains
 # 2.1 Двойной клик (левой кнопкой мыши)
+test_double_click()
 
 # 2.2 Клик правой кнопкой мыши
-test_double_click()
+
 
 
 # 3.
