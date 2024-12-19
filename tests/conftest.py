@@ -1,12 +1,11 @@
 import os
 import pytest
-
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-
+from src.screenshots import Screenshots
 from tests.pages.base_page import BasePage
 from tests.pages.login_page import LoginPage
 from tests.pages.web_elements_page import Web_Elements
@@ -18,7 +17,7 @@ def driver(request):
     chrome_options = Options()
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("--disable-notifications")
-    # chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--headless=new")
 
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
 
@@ -35,11 +34,10 @@ def pytest_exception_interact(node, call, report):
         driver = getattr(node, "_driver", None)
         if driver:
             # Сохраняем скриншот
-            screenshot_path = os.path.join(f"C:/Users/Alexandr/PycharmProjects/edu_selenium"
-                                           f"/src/screenshots/{datetime.now().strftime("%H-%M-%S-%d-%m-%Y")}_{node.name}.png")
-            os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)
+            screenshot_path = os.path.join(Screenshots.dirname, f"{datetime.now().strftime("%H-%M-%S-%d-%m-%Y")}_{node.name}.png")
+            # os.makedirs(os.path.dirname(screenshot_path), exist_ok=True)
             driver.save_screenshot(screenshot_path)
-            print(f"Screenshot saved to {screenshot_path}")
+            print(f"Скриншот сохранён: {screenshot_path}")
 
 @pytest.fixture
 def base_page(driver):
