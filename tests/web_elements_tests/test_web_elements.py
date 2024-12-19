@@ -77,3 +77,15 @@ def test_right_click(driver, base_page, web_page):
 
     assert actual_message == expected_message
     print(f"Ожидали: {expected_message}\nПолучили: {actual_message}")
+
+def test_calendar(driver, base_page, web_page):
+    driver.get(web_page.calendar_url)
+    print(f"Открываем страницу с календарем: {web_page.calendar_url}")
+
+    web_page.set_calendar_date(2000, 2, 25)
+
+    time.sleep(15)
+
+
+
+
