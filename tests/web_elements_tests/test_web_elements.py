@@ -82,9 +82,12 @@ def test_calendar(driver, base_page, web_page):
     driver.get(web_page.calendar_url)
     print(f"Открываем страницу с календарем: {web_page.calendar_url}")
 
-    web_page.set_calendar_date(2000, 2, 25)
+    test_date = (12, 21, 2024)
+    web_page.set_calendar_date(*test_date)
+    # web_page.set_calendar_date(2000, 3, 15)
 
-    time.sleep(15)
+    assert web_page.calendar_selector.text() in test_date
+    print(f"Ожидаемая дата: {test_date}\nФактическая дата в календаре: {web_page.calendar_selector.text()}")
 
 
 
